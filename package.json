@@ -1,0 +1,29 @@
+{
+  "name": "better-softphone",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "hapi": "^16.5.2",
+    "hapi-auth-cookie": "^7.0.0",
+    "joi": "^10.6.0",
+    "lodash": "^4.17.4",
+    "material-ui": "^0.19.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-scripts": "1.0.13",
+    "twilio": "^3.6.5"
+  },
+  "scripts": {
+    "start-dev": "concurrently \"npm run server-dev\" \"npm run client-dev\"",
+    "server-dev": "nodemon ./server/index.js",
+    "client-dev": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "start-server": "node server/index.js",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.0",
+    "nodemon": "^1.11.0"
+  }
+}
