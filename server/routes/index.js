@@ -1,11 +1,10 @@
 const Joi = require('joi');
 
-const twimlHandler = require('./handlers/twiml');
-const inboundTwimlHandler = require('./handlers/inbound-twiml');
+const twilioTokenHandler = require('./handlers/twilio-token');
+const twilioVoiceHandler = require('./handlers/twilio-voice');
 
-const numberData = [1,2,3,4,5];
+const numberData = ['15035059957', '14804065861'];
 function numbers(request, reply) {
-  console.log('request!');
   reply(numberData);
 }
 
@@ -16,26 +15,30 @@ const routes = [
     handler: numbers,
     config: {
       auth: false,
-      tags: ['api', 'users'],
       validate: {
         query: Joi.object(),
       },
       response: {
-        schema: Joi.array()
-      }
+        schema: Joi.array(),
+      },
     },
   },
   {
     method: 'GET',
-    path: '/twiml',
-    handler: twimlHandler
+    config: {
+      auth: false,
+    },
+    path: '/twilio-token',
+    handler: twilioTokenHandler,
   },
   {
     method: 'GET',
-    path: '/inbound-twiml',
-    handler: inboundTwimlHandler
+    config: {
+      auth: false,
+    },
+    path: '/twilio-voice',
+    handler: twilioVoiceHandler,
   },
 ];
-;
 
 module.exports = routes;
