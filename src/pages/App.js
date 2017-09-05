@@ -82,12 +82,19 @@ class App extends Component {
   }
   handleDial = () => {
     const { number, callerId } = this.state;
+    this.setState({
+      onCall: true,
+    });
+
     Twilio.Device.connect({
       To: phoneFormatter.normalize(number),
       callerId,
     });
   }
   handleHangup = () => {
+    this.setState({
+      onCall: false
+    });
     Twilio.Device.disconnectAll();
   }
   render() {
@@ -115,9 +122,18 @@ class App extends Component {
             onChange={this.handleEnterNumber}
             value={this.state.number}
           />
-          <FloatingActionButton
-            onClick={this.handleDial}
-          />
+          {this.state.onCall ?
+            (
+              <FloatingActionButton
+                onClick={this.handleHangup}
+                secondary={true}
+              />
+            )
+            :(
+              <FloatingActionButton
+                onClick={this.handleDial}
+              />
+             )}
         </div>
       </div>
     );
