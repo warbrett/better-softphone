@@ -7,10 +7,10 @@ const cookies = {
     isSecure: false,
   },
   production: {
-    password: 'password-should-be-32-characters',
+    password: process.env.COOKIE_PASSWORD,
     cookie: 'bsoft',
     isSecure: true,
-  }
+  },
 };
 
 const connectionOptions = {
@@ -20,8 +20,8 @@ const connectionOptions = {
     routes: {
       cors: {
         credentials: true,
-        origin: ['*']
-      }
+        origin: ['*'],
+      },
     },
   },
   production: {
@@ -30,10 +30,10 @@ const connectionOptions = {
     routes: {
       cors: {
         credentials: true,
-        origin: ['*']
-      }
+        origin: ['*'],
+      },
     },
-  }
+  },
 };
 
 module.exports = {

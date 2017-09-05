@@ -1,4 +1,5 @@
 const CookieAuth = require('hapi-auth-cookie');
+const Inert = require('inert');
 const Hapi = require('hapi');
 
 const config = require('./server-config');
@@ -11,6 +12,7 @@ server.connection(config.connection);
 // Register Hapi Plugins
 server.register([
   CookieAuth,
+  Inert,
 ], err => err);
 
 server.auth.strategy('auth', 'cookie', true, config.cookies);

@@ -1,9 +1,37 @@
+import 'isomorphic-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { applyMiddleware, createStore } from 'redux';
+import reduxThunk from 'redux-thunk';
+
 import './index.css';
-import App from './pages/App';
+import reducers from './state';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<MuiThemeProvider><App /></MuiThemeProvider>, document.getElementById('root'));
+// Pages
+import App from './pages/App';
+import Login from './pages/login';
+import Signup from './pages/signup';
+
+const store = createStore(reducers, applyMiddleware(reduxThunk));
+
+const application = (
+  <Provider store={store}>
+    <MuiThemeProvider>
+      <Router>
+        <div>
+          <Route exact path="/" component={Login} />
+          <Route path="/app" component={App} />
+          <Route path="/signup" component={Signup} />
+
+        </div>
+      </Router>
+    </MuiThemeProvider>
+  </Provider>
+);
+
+ReactDOM.render(application, document.getElementById('root'));
 registerServiceWorker();

@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { FloatingActionButton, TextField } from 'material-ui';
+import { connect } from 'react-redux';
+import { FloatingActionButton, MenuItem, SelectField, TextField } from 'material-ui';
+import phoneFormatter from 'phone-formatter';
 import Twilio from '../lib/twilio';
+import { getNumbers } from '../state/self';
 
 import './App.css';
 
 import { apiFetch } from '../lib/fetch';
-
+// Maybe use a redux-middleware for these
 function setupTwilio() {
   Twilio.Device.ready(function (device) {
     console.log('Twilio.Device Ready!');
@@ -42,11 +45,14 @@ class App extends Component {
     super(props);
     this.state = {
       number: '',
-      numbers: [],
       token: null,
+    }
+    if(!props.self.id) {
+      this.props.history.push('/');
     }
   }
   componentDidMount() {
+    // TODO: move to actions
     apiFetch('/twilio-token')
     .then((data) => {
       Twilio.Device.setup(data.token);
@@ -55,44 +61,59 @@ class App extends Component {
       this.setState({
         token:  data.token,
         identity: data.identity,
+        callerId: null,
       });
     })
     .catch(err => {
       console.log('token err', err);
     });
 
-    apiFetch('/numbers')
-    .then((numbers) => {
-      this.setState({ numbers });
-    })
-    .catch(err => {
-      console.log('fetch err', err);
-    });
+    this.props.getNumbers();
   }
   handleEnterNumber = (evt) => {
     this.setState({
       number: evt.target.value,
     });
   }
+  handleChangeCallerId = (evt, idx, val) => {
+    this.setState({
+      callerId: val
+    });
+  }
   handleDial = () => {
-    console.log('dialing', this.state.number);
+    const { number, callerId } = this.state;
     Twilio.Device.connect({
-      To: this.state.number,
-      callerId: this.state.numbers[0],
+      To: phoneFormatter.normalize(number),
+      callerId,
     });
   }
   handleHangup = () => {
     Twilio.Device.disconnectAll();
   }
   render() {
-    console.log(this.state);
+    const { numbers } = this.props.self;
+    const numberOptions = numbers.map(n => {
+      const formatted = phoneFormatter.format(n, "(NNN) NNN-NNNN");
+      return (<MenuItem key={n} value={n} label={formatted} primaryText={formatted} />);
+    });
+
     return (
       <div className="App">
         <div className="App-header">
           <h2>Caller Demo</h2>
+        </div>
+        <SelectField
+          floatingLabelText="Caller Id"
+          onChange={this.handleChangeCallerId}
+          value={this.state.callerId}
+          >
+          {numberOptions}
+        </SelectField>
+        <div>
           <TextField
-            value={this.state.number}
+            floatingLabelText="Number to Dial"
             onChange={this.handleEnterNumber}
+            value={this.state.number}
           />
           <FloatingActionButton
             onClick={this.handleDial}
@@ -103,4 +124,19 @@ class App extends Component {
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  const { self } = state;
+  return { self };
+}
+
+const boundFunctions = {
+  getNumbers,
+}
+
+App.defaultProps = {
+  user: {
+    numbers: []
+  }
+};
+
+export default connect(mapStateToProps, boundFunctions)(App);
