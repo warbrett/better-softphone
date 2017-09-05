@@ -27,6 +27,7 @@
     "twilio": "^3.6.5"
   },
   "scripts": {
+    "start": "migrate-up && build && start-server",
     "start-dev": "concurrently \"npm run server-dev\" \"npm run client-dev\"",
     "server-dev": "nodemon ./server/index.js",
     "client-dev": "react-scripts start",
