@@ -16,7 +16,7 @@ const cookies = {
 const connectionOptions = {
   development: {
     host: '0.0.0.0',
-    port: 3001,
+    port: process.env.PORT || 3001,
     routes: {
       cors: {
         credentials: true,
@@ -26,7 +26,7 @@ const connectionOptions = {
   },
   production: {
     host: '0.0.0.0',
-    port: 3001,
+    port: process.env.PORT || 3001,
     routes: {
       cors: {
         credentials: true,
