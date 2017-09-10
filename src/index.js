@@ -12,7 +12,7 @@ import reducers from './state';
 import registerServiceWorker from './registerServiceWorker';
 
 // Pages
-import App from './pages/App';
+import App from './pages/app';
 import Login from './pages/login';
 import Signup from './pages/signup';
 
@@ -26,7 +26,6 @@ const application = (
           <Route exact path="/" component={Login} />
           <Route path="/app" component={App} />
           <Route path="/signup" component={Signup} />
-
         </div>
       </Router>
     </MuiThemeProvider>

@@ -1,6 +1,7 @@
 {
   // enable airbnb eslint from https://www.npmjs.com/package/eslint-config-airbnb
   "extends": "airbnb",
+  "parser": "babel-eslint",
   "globals": {
     "window": true,
     "document": true,

@@ -1,43 +1,35 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FloatingActionButton, MenuItem, SelectField, TextField } from 'material-ui';
 import phoneFormatter from 'phone-formatter';
 import Twilio from '../lib/twilio';
 import { getNumbers } from '../state/self';
 
-import './App.css';
+import './app.css';
 
 import { apiFetch } from '../lib/fetch';
 // Maybe use a redux-middleware for these
 function setupTwilio() {
-  Twilio.Device.ready(function (device) {
-    console.log('Twilio.Device Ready!');
+  Twilio.Device.ready((device) => {
+    console.log('Twilio.Device Ready!', device);
   });
 
-  Twilio.Device.error(function (error) {
-    console.log(error);
-    console.log('Twilio.Device Error: ' + error.message);
+  Twilio.Device.error((error) => {
+    console.log('Twilio.Device Error: ' + error.message, error);
   });
 
-  Twilio.Device.connect(function (conn) {
-    console.log('Successfully established call!');
+  Twilio.Device.connect((conn) => {
+    console.log('Successfully established call!', conn);
   });
 
-  Twilio.Device.disconnect(function (conn) {
-    console.log('Call ended.');
+  Twilio.Device.disconnect((conn) => {
+    console.log('Call ended.', conn);
   });
 
-  Twilio.Device.incoming(function (conn) {
+  Twilio.Device.incoming((conn) => {
     console.log('Incoming connection from ' + conn.parameters.From);
-    var archEnemyPhoneNumber = '+12099517118';
-
-    if (conn.parameters.From === archEnemyPhoneNumber) {
-      conn.reject();
-      console.log('It\'s your nemesis. Rejected call.');
-    } else {
-      // accept the incoming connection and start two-way audio
-      conn.accept();
-    }
+    conn.accept();
   });
 }
 class App extends Component {
@@ -46,27 +38,27 @@ class App extends Component {
     this.state = {
       number: '',
       token: null,
-    }
-    if(!props.self.id) {
+    };
+    if (!props.self.id) {
       this.props.history.push('/');
     }
   }
   componentDidMount() {
     // TODO: move to actions
     apiFetch('/twilio-token')
-    .then((data) => {
-      Twilio.Device.setup(data.token);
-      setupTwilio();
+      .then(({ token, identity }) => {
+        Twilio.Device.setup(token);
+        setupTwilio();
 
-      this.setState({
-        token:  data.token,
-        identity: data.identity,
-        callerId: null,
+        this.setState({
+          token,
+          identity,
+          callerId: null,
+        });
+      })
+      .catch((err) => {
+        console.log('token err', err);
       });
-    })
-    .catch(err => {
-      console.log('token err', err);
-    });
 
     this.props.getNumbers();
   }
@@ -77,7 +69,7 @@ class App extends Component {
   }
   handleChangeCallerId = (evt, idx, val) => {
     this.setState({
-      callerId: val
+      callerId: val,
     });
   }
   handleDial = () => {
@@ -93,14 +85,14 @@ class App extends Component {
   }
   handleHangup = () => {
     this.setState({
-      onCall: false
+      onCall: false,
     });
     Twilio.Device.disconnectAll();
   }
   render() {
     const { numbers } = this.props.self;
-    const numberOptions = numbers.map(n => {
-      const formatted = phoneFormatter.format(n, "(NNN) NNN-NNNN");
+    const numberOptions = numbers.map((n) => {
+      const formatted = phoneFormatter.format(n, '(NNN) NNN-NNNN');
       return (<MenuItem key={n} value={n} label={formatted} primaryText={formatted} />);
     });
 
@@ -113,7 +105,7 @@ class App extends Component {
           floatingLabelText="Caller Id"
           onChange={this.handleChangeCallerId}
           value={this.state.callerId}
-          >
+        >
           {numberOptions}
         </SelectField>
         <div>
@@ -129,11 +121,11 @@ class App extends Component {
                 secondary={true}
               />
             )
-            :(
+            : (
               <FloatingActionButton
                 onClick={this.handleDial}
               />
-             )}
+            )}
         </div>
       </div>
     );
@@ -147,12 +139,18 @@ function mapStateToProps(state) {
 
 const boundFunctions = {
   getNumbers,
-}
+};
 
 App.defaultProps = {
-  user: {
-    numbers: []
-  }
+  self: {
+    numbers: [],
+  },
+};
+
+App.propTypes = {
+  getNumbers: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  self: PropTypes.object,
 };
 
 export default connect(mapStateToProps, boundFunctions)(App);
