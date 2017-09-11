@@ -32,10 +32,8 @@ export function login(email, password) {
       method: 'POST',
       body: { email, password },
     };
-    console.log('login attempt');
     return apiFetch('/login', options)
       .then((self) => {
-        console.log('login success!', self);
         dispatch(loginEnd(self));
         return self;
       })
@@ -89,7 +87,6 @@ const initialState = {
 function userReducer(state = initialState, { type, payload }) {
   switch (type) {
     case LOGIN_END:
-      console.log('done logging in', payload);
       return { ...state, ...payload };
     case GET_NUMBERS_END:
       return { ...state, numbers: payload };

@@ -40,7 +40,7 @@ class App extends Component {
       token: null,
     };
     if (!props.self.id) {
-      this.props.history.push('/');
+      //      this.props.history.push('/');
     }
   }
   componentDidMount() {
@@ -65,6 +65,11 @@ class App extends Component {
   handleEnterNumber = (evt) => {
     this.setState({
       number: evt.target.value,
+    });
+  }
+  handleTouchEnterNumber = (evt) => {
+    this.setState({
+      number: this.state.number + evt.target.value,
     });
   }
   handleChangeCallerId = (evt, idx, val) => {
@@ -114,6 +119,76 @@ class App extends Component {
             onChange={this.handleEnterNumber}
             value={this.state.number}
           />
+          <div className="dialpad">
+            <div>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="1"
+              >1</FloatingActionButton>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="2"
+              >2</FloatingActionButton>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="3"
+              >3</FloatingActionButton>
+            </div>
+            <div>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="4"
+              >4</FloatingActionButton>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="5"
+              >5</FloatingActionButton>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="6"
+              >6</FloatingActionButton>
+            </div>
+            <div>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="7"
+              >7</FloatingActionButton>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="8"
+              >8</FloatingActionButton>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="9"
+              >9</FloatingActionButton>
+            </div>
+            <div>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="*"
+              >*</FloatingActionButton>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="0"
+              >0</FloatingActionButton>
+              <FloatingActionButton
+                className="dialpad-btn"
+                onClick={this.handleTouchEnterNumber}
+                value="+"
+              >+</FloatingActionButton>
+            </div>
+          </div>
           {this.state.onCall ?
             (
               <FloatingActionButton
