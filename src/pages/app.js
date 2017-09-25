@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FloatingActionButton, MenuItem, SelectField, TextField } from 'material-ui';
 import phoneFormatter from 'phone-formatter';
+import Phone from 'material-ui/svg-icons/maps/local-phone';
+
 import Twilio from '../lib/twilio';
 import { getNumbers } from '../state/self';
-
 import './app.css';
 
 import { apiFetch } from '../lib/fetch';
@@ -67,9 +68,9 @@ class App extends Component {
       number: evt.target.value,
     });
   }
-  handleTouchEnterNumber = (evt) => {
+  handleTouchEnterNumber = (num) => {
     this.setState({
-      number: this.state.number + evt.target.value,
+      number: this.state.number + num,
     });
   }
   handleChangeCallerId = (evt, idx, val) => {
@@ -123,68 +124,57 @@ class App extends Component {
             <div>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="1"
+                onClick={() => this.handleTouchEnterNumber('1')}
               >1</FloatingActionButton>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="2"
+                onClick={() => this.handleTouchEnterNumber('2')}
               >2</FloatingActionButton>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="3"
+                onClick={() => this.handleTouchEnterNumber('3')}
               >3</FloatingActionButton>
             </div>
             <div>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="4"
+                onClick={() => this.handleTouchEnterNumber('4')}
               >4</FloatingActionButton>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="5"
+                onClick={() => this.handleTouchEnterNumber('5')}
               >5</FloatingActionButton>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="6"
+                onClick={() => this.handleTouchEnterNumber('6')}
               >6</FloatingActionButton>
             </div>
             <div>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="7"
+                onClick={() => this.handleTouchEnterNumber('7')}
               >7</FloatingActionButton>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="8"
+                onClick={() => this.handleTouchEnterNumber('8')}
               >8</FloatingActionButton>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="9"
+                onClick={() => this.handleTouchEnterNumber('9')}
               >9</FloatingActionButton>
             </div>
             <div>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="*"
+                onClick={() => this.handleTouchEnterNumber('*')}
               >*</FloatingActionButton>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
-                value="0"
+                onClick={() => this.handleTouchEnterNumber('0')}
               >0</FloatingActionButton>
               <FloatingActionButton
                 className="dialpad-btn"
-                onClick={this.handleTouchEnterNumber}
+                onClick={() => this.handleTouchEnterNumber('+')}
                 value="+"
               >+</FloatingActionButton>
             </div>
@@ -194,12 +184,16 @@ class App extends Component {
               <FloatingActionButton
                 onClick={this.handleHangup}
                 secondary={true}
-              />
+              >
+                <Phone />
+              </FloatingActionButton>
             )
             : (
               <FloatingActionButton
                 onClick={this.handleDial}
-              />
+              >
+                <Phone />
+              </FloatingActionButton>
             )}
         </div>
       </div>
@@ -224,7 +218,6 @@ App.defaultProps = {
 
 App.propTypes = {
   getNumbers: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
   self: PropTypes.object,
 };
 

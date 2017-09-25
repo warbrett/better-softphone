@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Paper, RaisedButton, TextField } from 'material-ui';
+import { RaisedButton, TextField } from 'material-ui';
 import AuthWrapper from '../wrappers/auth';
-import { login } from '../state/self';
+import { forgotPassword } from '../state/self';
 
 const baseStyles = {
   btn: {
@@ -21,10 +21,8 @@ class Login extends Component {
     super(props);
     this.state = {
       email: '',
-      password: '',
     };
     this.handleEmail = this.handleText.bind(this, 'email');
-    this.handlePassword = this.handleText.bind(this, 'password');
   }
   handleText = (field, evt) => {
     this.setState({
@@ -32,21 +30,22 @@ class Login extends Component {
     });
   }
   handleLogin = () => {
-    const { email, password } = this.state;
-    this.props.login(email, password)
+    const { email } = this.state;
+    this.props.forgotPassword(email)
       .then(() => {
-        this.props.history.push('/app');
+        this.setState({
+          message: 'Please Check Your Email',
+        });
       })
       .catch((err) => {
         this.setState({
-          password: '',
-          errorMessage: 'Error Logging in',
+          errorMessage: '',
         });
       });
   }
   render() {
     return (
-      <AuthWrapper title="Login">
+      <AuthWrapper title="Forgot Password">
         {this.state.errorMessage}
         <div>
           <TextField
@@ -55,24 +54,16 @@ class Login extends Component {
             value={this.state.email}
           />
         </div>
-        <div>
-          <TextField
-            floatingLabelText="Password"
-            onChange={this.handlePassword}
-            type="password"
-            value={this.state.password}
-          />
-        </div>
         <div style={baseStyles.btnContainer}>
-          <Link to="/forgot">
+          <Link to="/">
             <RaisedButton
-              label="Reset Password"
+              label="Cancel"
               style={baseStyles.btn}
             />
           </Link>
           <RaisedButton
-            label="Login"
-            onClick={this.handleLogin}
+            label="Reset Password"
+            onClick={this.handleReset}
             style={baseStyles.btn}
           />
         </div>
@@ -86,11 +77,11 @@ function mapStateToProps(state) {
 }
 
 const boundFunctions = {
-  login,
+  forgotPassword,
 };
 
-Login.defaultProps = {
-  login: PropTypes.func.isRequired,
+Login.propTypes = {
+  forgotPassword: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, boundFunctions)(Login);

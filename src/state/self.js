@@ -63,6 +63,11 @@ export function signup(details) {
   };
 }
 
+export function forgotPassword(email) {
+  //TODO: Implement this
+  return Promise.resolve();
+}
+
 export function getNumbers() {
   return function dispatcher(dispatch) {
     dispatch(getNumbersStart());
