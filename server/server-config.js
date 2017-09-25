@@ -40,4 +40,6 @@ module.exports = {
   env,
   connection: connectionOptions[env],
   cookies: cookies[env],
+  sendgridUsername: process.env.SENDGRID_USERNAME,
+  sendgridPassword: process.env.SENDGRID_PASSWORD,
 };

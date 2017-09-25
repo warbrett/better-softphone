@@ -1,4 +1,3 @@
-
 const upQuery = `
 CREATE TABLE IF NOT EXISTS users(
   id SERIAL PRIMARY KEY,
@@ -13,10 +12,10 @@ CREATE TABLE IF NOT EXISTS users(
 
 const downQuery = 'DROP TABLE users;';
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return knex.raw(upQuery);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return knex.raw(downQuery);
 };

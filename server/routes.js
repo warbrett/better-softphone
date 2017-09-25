@@ -3,6 +3,7 @@ const Joi = require('joi');
 // Auth Handlers
 const loginHandler = require('./handlers/login');
 const logoutHandler = require('./handlers/logout');
+const forgotPasswordHandler = require('./handlers/forgot-password');
 
 // User Handlers
 const usersAddHandler = require('./handlers/users-add');
@@ -50,6 +51,19 @@ const routes = [
           twimlAppSid: Joi.string().required(),
           twilioAccountSid: Joi.string().required(),
           twilioAuthToken: Joi.string().required(),
+        }),
+      },
+    },
+  },
+  {
+    method: 'POST',
+    path: '/api/forgot-password',
+    handler: forgotPasswordHandler,
+    config: {
+      auth: false,
+      validate: {
+        payload: Joi.object({
+          email: Joi.string().email().required(),
         }),
       },
     },
