@@ -21,7 +21,10 @@ const routes = [
     config: {
       auth: false,
       validate: {
-        payload: Joi.object(),
+        payload: Joi.object({
+          email: Joi.string().email().required(),
+          password: Joi.string().min(8).required(),
+        }),
       },
     },
   },
@@ -40,7 +43,14 @@ const routes = [
     config: {
       auth: false,
       validate: {
-        payload: Joi.object(),
+        payload: Joi.object({
+          email: Joi.string().email().required(),
+          password: Joi.string().min(8).required(),
+          name: Joi.string().required(),
+          twimlAppSid: Joi.string().required(),
+          twilioAccountSid: Joi.string().required(),
+          twilioAuthToken: Joi.string().required(),
+        }),
       },
     },
   },
