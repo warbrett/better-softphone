@@ -16,6 +16,7 @@ import App from './pages/app';
 import Login from './pages/login';
 import Signup from './pages/signup';
 import ForgotPassword from './pages/forgot-password';
+import ResetPassword from './pages/reset-password';
 
 const store = createStore(reducers, applyMiddleware(reduxThunk));
 
@@ -28,6 +29,7 @@ const application = (
           <Route path="/app" component={App} />
           <Route path="/signup" component={Signup} />
           <Route path="/forgot" component={ForgotPassword} />
+          <Route path="/reset" component={ResetPassword} />
         </div>
       </Router>
     </MuiThemeProvider>

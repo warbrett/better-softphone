@@ -16,7 +16,7 @@ const baseStyles = {
   },
 };
 
-class Login extends Component {
+class ForgotPassword extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -82,8 +82,8 @@ const boundFunctions = {
   forgotPassword,
 };
 
-Login.propTypes = {
+ForgotPassword.propTypes = {
   forgotPassword: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, boundFunctions)(Login);
+export default connect(mapStateToProps, boundFunctions)(ForgotPassword);

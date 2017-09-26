@@ -4,6 +4,7 @@ const Joi = require('joi');
 const loginHandler = require('./handlers/login');
 const logoutHandler = require('./handlers/logout');
 const forgotPasswordHandler = require('./handlers/forgot-password');
+const resetPasswordHandler = require('./handlers/reset-password');
 
 // User Handlers
 const usersAddHandler = require('./handlers/users-add');
@@ -64,6 +65,20 @@ const routes = [
       validate: {
         payload: Joi.object({
           email: Joi.string().email().required(),
+        }),
+      },
+    },
+  },
+  {
+    method: 'POST',
+    path: '/api/reset-password',
+    handler: resetPasswordHandler,
+    config: {
+      auth: false,
+      validate: {
+        payload: Joi.object({
+          token: Joi.string().required(),
+          password: Joi.string().min(8).required(),
         }),
       },
     },

@@ -39,10 +39,7 @@ function usersAddHandler(request, reply) {
       request.cookieAuth.set(cookieMe);
       reply(omit(cookieMe, ['twimlAppSid', 'twilioAccountSid', 'twilioAuthToken']));
     })
-    .catch((e) => {
-      console.log('err', e);
-      reply(e);
-    });
+    .catch(reply);
 }
 
 module.exports = usersAddHandler;

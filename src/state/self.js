@@ -17,6 +17,10 @@ const FORGOT_PASSWORD_START = 'FORGOT_PASSWORD_START';
 const FORGOT_PASSWORD_END = 'FORGOT_PASSWORD_END';
 const FORGOT_PASSWORD_ERROR = 'FORGOT_PASSWORD_ERROR';
 
+const RESET_PASSWORD_START = 'RESET_PASSWORD_START';
+const RESET_PASSWORD_END = 'RESET_PASSWORD_END';
+const RESET_PASSWORD_ERROR = 'RESET_PASSWORD_ERROR';
+
 const loginStart = makeActionCreator(LOGIN_START);
 const loginEnd = makeActionCreator(LOGIN_END);
 const loginError = makeActionCreator(LOGIN_ERROR);
@@ -32,6 +36,10 @@ const getNumbersError = makeActionCreator(GET_NUMBERS_ERROR);
 const forgotPasswordStart = makeActionCreator(FORGOT_PASSWORD_START);
 const forgotPasswordEnd = makeActionCreator(FORGOT_PASSWORD_END);
 const forgotPasswordError = makeActionCreator(FORGOT_PASSWORD_ERROR);
+
+const resetPasswordStart = makeActionCreator(RESET_PASSWORD_START);
+const resetPasswordEnd = makeActionCreator(RESET_PASSWORD_END);
+const resetPasswordError = makeActionCreator(RESET_PASSWORD_ERROR);
 
 export function login(email, password) {
   return function dispatcher(dispatch) {
@@ -85,6 +93,26 @@ export function forgotPassword(email) {
       })
       .catch((err) => {
         dispatch(forgotPasswordError);
+        throw err;
+      });
+  };
+}
+
+export function resetPassword(password, token) {
+  return function dispatcher(dispatch) {
+    const options = {
+      method: 'POST',
+      body: { password, token },
+    };
+
+    dispatch(resetPasswordStart());
+    return apiFetch('/reset-password', options)
+      .then((res) => {
+        dispatch(resetPasswordEnd());
+        return res;
+      })
+      .catch((err) => {
+        dispatch(resetPasswordError(err));
         throw err;
       });
   };
