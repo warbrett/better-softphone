@@ -9,7 +9,7 @@ const baseStyles = {
     margin: '25px auto',
     padding: 25,
     width: 400,
-    height: 300,
+    minHeight: 300,
   },
   container: {
     height: 50,

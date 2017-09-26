@@ -29,7 +29,7 @@ class Login extends Component {
       [field]: evt.target.value,
     });
   }
-  handleLogin = () => {
+  handleReset = () => {
     const { email } = this.state;
     this.props.forgotPassword(email)
       .then(() => {
@@ -37,16 +37,16 @@ class Login extends Component {
           message: 'Please Check Your Email',
         });
       })
-      .catch((err) => {
+      .catch(() => {
         this.setState({
-          errorMessage: '',
+          message: 'An Error Occured',
         });
       });
   }
   render() {
     return (
       <AuthWrapper title="Forgot Password">
-        {this.state.errorMessage}
+        {this.state.message}
         <div>
           <TextField
             floatingLabelText="Email"
@@ -58,12 +58,14 @@ class Login extends Component {
           <Link to="/">
             <RaisedButton
               label="Cancel"
+              secondary={true}
               style={baseStyles.btn}
             />
           </Link>
           <RaisedButton
             label="Reset Password"
             onClick={this.handleReset}
+            primary={true}
             style={baseStyles.btn}
           />
         </div>

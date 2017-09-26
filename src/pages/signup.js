@@ -2,6 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {  RaisedButton, TextField } from 'material-ui';
 import { signup } from '../state/self';
+import AuthWrapper from '../wrappers/auth';
+
+const baseStyles = {
+  signupBtn: {
+    margin: 20,
+    width: 300,
+  },
+};
 
 class Signup extends Component {
   constructor(props) {
@@ -13,7 +21,7 @@ class Signup extends Component {
       twimlAppSid: '',
       twilioAccountSid: '',
       twilioAuthToken: '',
-    }
+    };
     this.handleEmail = this.handleText.bind(this, 'email');
     this.handlePassword = this.handleText.bind(this, 'password');
     this.handleName = this.handleText.bind(this, 'name');
@@ -41,10 +49,7 @@ class Signup extends Component {
   }
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <h2>Caller Demo</h2>
-        </div>
+      <AuthWrapper title="Signup">
         <div>
           <TextField
             floatingLabelText="Email"
@@ -59,13 +64,9 @@ class Signup extends Component {
           />
           <TextField
             floatingLabelText="Name"
+            hintText="John Doe"
             onChange={this.handleName}
             value={this.state.name}
-          />
-          <TextField
-            floatingLabelText="Twiml App Sid"
-            onChange={this.handleTwimlAppAsid}
-            value={this.state.twimlAppSid}
           />
           <TextField
             floatingLabelText="Twilio Account Sid"
@@ -77,12 +78,21 @@ class Signup extends Component {
             onChange={this.handleTwilioAuthToken}
             value={this.state.twilioAuthToken}
           />
-          <RaisedButton
-            label="Signup"
-            onClick={this.handleSignup}
+          <TextField
+            floatingLabelText="Twiml App Sid"
+            onChange={this.handleTwimlAppAsid}
+            value={this.state.twimlAppSid}
           />
+          <div>
+            <RaisedButton
+              label="Signup"
+              onClick={this.handleSignup}
+              primary={true}
+              style={baseStyles.signupBtn}
+            />
+          </div>
         </div>
-      </div>
+      </AuthWrapper>
     );
   }
 }

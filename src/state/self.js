@@ -13,6 +13,10 @@ const GET_NUMBERS_START = 'GET_NUMBERS_START';
 const GET_NUMBERS_END = 'GET_NUMBERS_END';
 const GET_NUMBERS_ERROR = 'GET_NUMBERS_ERROR';
 
+const FORGOT_PASSWORD_START = 'FORGOT_PASSWORD_START';
+const FORGOT_PASSWORD_END = 'FORGOT_PASSWORD_END';
+const FORGOT_PASSWORD_ERROR = 'FORGOT_PASSWORD_ERROR';
+
 const loginStart = makeActionCreator(LOGIN_START);
 const loginEnd = makeActionCreator(LOGIN_END);
 const loginError = makeActionCreator(LOGIN_ERROR);
@@ -24,6 +28,10 @@ const signupError = makeActionCreator(SIGNUP_ERROR);
 const getNumbersStart = makeActionCreator(GET_NUMBERS_START);
 const getNumbersEnd = makeActionCreator(GET_NUMBERS_END);
 const getNumbersError = makeActionCreator(GET_NUMBERS_ERROR);
+
+const forgotPasswordStart = makeActionCreator(FORGOT_PASSWORD_START);
+const forgotPasswordEnd = makeActionCreator(FORGOT_PASSWORD_END);
+const forgotPasswordError = makeActionCreator(FORGOT_PASSWORD_ERROR);
 
 export function login(email, password) {
   return function dispatcher(dispatch) {
@@ -64,14 +72,27 @@ export function signup(details) {
 }
 
 export function forgotPassword(email) {
-  //TODO: Implement this
-  return Promise.resolve();
+  return function dispatcher(dispatch) {
+    const options = {
+      method: 'POST',
+      body: { email },
+    };
+    dispatch(forgotPasswordStart);
+    return apiFetch('/forgot-password', options)
+      .then((res) => {
+        dispatch(forgotPasswordEnd);
+        return res;
+      })
+      .catch((err) => {
+        dispatch(forgotPasswordError);
+        throw err;
+      });
+  };
 }
 
 export function getNumbers() {
   return function dispatcher(dispatch) {
     dispatch(getNumbersStart());
-
     return apiFetch('/twilio-numbers')
       .then((numbers) => {
         dispatch(getNumbersEnd(numbers));

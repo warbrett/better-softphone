@@ -67,12 +67,14 @@ class Login extends Component {
           <Link to="/forgot">
             <RaisedButton
               label="Reset Password"
+              secondary={true}
               style={baseStyles.btn}
             />
           </Link>
           <RaisedButton
             label="Login"
             onClick={this.handleLogin}
+            primary={true}
             style={baseStyles.btn}
           />
         </div>

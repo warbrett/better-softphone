@@ -11,7 +11,8 @@ END;
 $$ language 'plpgsql';
 
 CREATE TABLE IF NOT EXISTS temporary_tokens(
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id INT REFERENCES users(id),
   type TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   redeemed_at TIMESTAMPTZ
@@ -30,11 +31,14 @@ CREATE TRIGGER updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE 
 const downQuery = `
 DROP TABLE temporary_tokens;
 
+DROP TRIGGER IF EXISTS updated_at ON users;
+
 ALTER TABLE users
   DROP COLUMN created_at,
   DROP COLUMN updated_at;
 
-DROP FUNCTION IF EXISTS updated_at;
+
+DROP FUNCTION IF EXISTS updated_at();
 `;
 
 exports.up = function (knex, Promise) {

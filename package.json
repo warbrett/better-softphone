@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sendgrid/mail": "^6.1.4",
     "babel-eslint": "^7.2.3",
     "bcrypt": "^1.0.3",
     "bluebird": "^3.5.0",
+    "boom": "^5.2.0",
     "cooldux": "^0.5.0",
+    "custom-error": "^0.2.1",
     "hapi": "^16.5.2",
     "hapi-auth-cookie": "^7.0.0",
     "inert": "^4.2.1",
