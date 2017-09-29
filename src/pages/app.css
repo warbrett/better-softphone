@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  margin: 25px;
 }
 
 .App-header {
@@ -11,7 +11,23 @@
   font-size: large;
 }
 
+
 .dialpad-btn {
   margin: 5px;
+}
+
+.dialpad-controls {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.dialpad {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.flex-item {
+  display: flex;
 }
 
