@@ -34,7 +34,7 @@
     "twilio": "^3.6.5"
   },
   "scripts": {
-    "start": "npm run migrate-up && npm run build && npm run start-server",
+    "start": "npm run migrate-up && npm run start-server",
     "start-dev": "concurrently \"npm run server-dev\" \"npm run client-dev\"",
     "server-dev": "nodemon ./server/index.js",
     "client-dev": "react-scripts start",
@@ -42,6 +42,7 @@
     "migrate-up": "knex migrate:latest",
     "migrate-down": "knex migrate:rollback",
     "build": "react-scripts build",
+    "heroku-postbuild": "npm run build",
     "test": "react-scripts test --env=jsdom",
     "start-server": "node server/index.js",
     "eject": "react-scripts eject"
