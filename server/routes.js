@@ -126,6 +126,46 @@ const routes = [
     config: {
       auth: false,
     },
+    path: '/signup',
+    handler: {
+      file: 'build/index.html',
+    },
+  },
+  {
+    method: 'GET',
+    config: {
+      auth: false,
+    },
+    path: '/forgot',
+    handler: {
+      file: 'build/index.html',
+    },
+  },
+  {
+    method: 'GET',
+    config: {
+      auth: false,
+    },
+    path: '/reset',
+    handler: {
+      file: 'build/index.html',
+    },
+  },
+  {
+    method: 'GET',
+    config: {
+      auth: false,
+    },
+    path: '/app',
+    handler: {
+      file: 'build/index.html',
+    },
+  },
+  {
+    method: 'GET',
+    config: {
+      auth: false,
+    },
     path: '/{param*}',
     handler: {
       directory: {
