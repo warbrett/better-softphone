@@ -44,18 +44,6 @@ function setupTwilio(component) {
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '*', 'enter', 'shift+8', 'shift+=', 'backspace'];
 
 const App = keydown(KEYS)(class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      callerIdFocused: false,
-      onCall: false,
-      number: '',
-      token: null,
-    };
-    if (!props.self.id) {
-      //      this.props.history.push('/');
-    }
-  }
   static defaultProps = {
     self: {
       numbers: [],
@@ -64,6 +52,15 @@ const App = keydown(KEYS)(class App extends Component {
   static propTypes = {
     getNumbers: PropTypes.object.isRequired,
     self: PropTypes.object,
+  }
+  constructor(props) {
+    super(props);
+    this.state = {
+      callerIdFocused: false,
+      onCall: false,
+      number: '',
+      token: null,
+    };
   }
   componentDidMount() {
     // TODO: move to actions

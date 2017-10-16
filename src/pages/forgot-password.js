@@ -82,8 +82,4 @@ const boundFunctions = {
   forgotPassword,
 };
 
-ForgotPassword.propTypes = {
-  forgotPassword: PropTypes.func.isRequired,
-};
-
 export default connect(mapStateToProps, boundFunctions)(ForgotPassword);

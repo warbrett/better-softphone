@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { forEach, upperFirst } from 'lodash';
 import { RaisedButton, TextField } from 'material-ui';
 import AuthWrapper from '../wrappers/auth';
+import validate from '../lib/validate';
 import { login } from '../state/self';
 
 const baseStyles = {
@@ -16,15 +18,29 @@ const baseStyles = {
   },
 };
 
+const fields = {
+  email: {
+    name: 'Email',
+    required: true,
+  },
+  password: {
+    name: 'Password',
+    required: true,
+  },
+};
+
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: '',
       password: '',
+      errors: {},
     };
-    this.handleEmail = this.handleText.bind(this, 'email');
-    this.handlePassword = this.handleText.bind(this, 'password');
+    forEach(fields, (fieldName, key) => {
+      const functionName = `handle${upperFirst(key)}`;
+      this[functionName] = this.handleText.bind(this, key);
+    });
   }
   handleText = (field, evt) => {
     this.setState({
@@ -32,6 +48,11 @@ class Login extends Component {
     });
   }
   handleLogin = () => {
+    const errors = validate(fields, this.state);
+    if (Object.keys(errors).length) {
+      return this.setState({ errors });
+    }
+
     const { email, password } = this.state;
     this.props.login(email, password)
       .then(() => {
@@ -40,16 +61,17 @@ class Login extends Component {
       .catch((err) => {
         this.setState({
           password: '',
-          errorMessage: 'Error Logging in',
+          pageError: 'Error Logging in',
         });
       });
   }
   render() {
     return (
       <AuthWrapper title="Login">
-        {this.state.errorMessage}
+        {this.state.pageError}
         <div>
           <TextField
+            errorText={this.state.errors.email}
             floatingLabelText="Email"
             onChange={this.handleEmail}
             value={this.state.email}
@@ -57,6 +79,7 @@ class Login extends Component {
         </div>
         <div>
           <TextField
+            errorText={this.state.errors.password}
             floatingLabelText="Password"
             onChange={this.handlePassword}
             type="password"
@@ -89,10 +112,6 @@ function mapStateToProps(state) {
 
 const boundFunctions = {
   login,
-};
-
-Login.defaultProps = {
-  login: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, boundFunctions)(Login);
