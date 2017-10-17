@@ -1,4 +1,5 @@
 import { makeActionCreator } from 'cooldux';
+import { get } from 'lodash';
 import { apiFetch } from '../lib/fetch';
 
 const LOGIN_START = 'LOGIN_START';
@@ -130,6 +131,26 @@ export function getNumbers() {
         dispatch(getNumbersError(err));
         throw err;
       });
+  };
+}
+
+
+export function verifyUser() {
+  return (dispatch, getState) => {
+    const userId = get(getState(), 'self.id', false);
+    if (!userId) {
+      dispatch(loginStart());
+      // Attempt to login with cookie
+      return apiFetch('/users/me')
+        .then((user) => {
+          dispatch(loginEnd(user));
+          return user;
+        })
+        .catch((err) => {
+          dispatch(loginError(err));
+          throw err;
+        });
+    }
   };
 }
 

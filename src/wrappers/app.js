@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { Paper, FlatButton, AppBar, ToolbarGroup } from 'material-ui';
+import { AppBar } from 'material-ui';
 import { colors } from '../lib/app-styles';
 
 const baseStyles = {
@@ -12,9 +11,17 @@ const baseStyles = {
     align: 'center',
     width: '100%',
   },
+  progressIndicator: {
+    margin: '25px auto',
+    display: 'block',
+  },
 };
 
 class AppWrapper extends Component {
+  static defaultProps = {}
+  static propTypes = {
+    children: PropTypes.node.isRequired,
+  }
   handleLogout = () => {
     console.log('logging out!');
   }
@@ -23,8 +30,7 @@ class AppWrapper extends Component {
       <div style={baseStyles.container}>
         <AppBar
           title="Better Softphone"
-        >
-        </AppBar>
+        />
         <div>
           {this.props.children}
         </div>
@@ -33,9 +39,5 @@ class AppWrapper extends Component {
   }
 }
 
-
-AppWrapper.defaultProps = {
-  children: PropTypes.node.isRequired,
-};
 
 export default AppWrapper;
