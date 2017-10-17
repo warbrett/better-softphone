@@ -11,6 +11,12 @@
   font-size: large;
 }
 
+.App-body {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 
 .dialpad-btn {
   margin: 5px;

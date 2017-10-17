@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom'
-import { Paper, FlatButton, Toolbar, ToolbarGroup } from 'material-ui';
+import { Link } from 'react-router-dom';
+import { Paper, FlatButton, AppBar, ToolbarGroup } from 'material-ui';
 import { colors } from '../lib/app-styles';
 
 const baseStyles = {
   container: {
-    height: 50,
     width: '100%',
-  },
-  header: {
-    backgroundColor: colors.headerBlue,
-    padding: '25px',
   },
   headerText: {
     align: 'center',
@@ -26,17 +21,13 @@ class AppWrapper extends Component {
   render() {
     return (
       <div style={baseStyles.container}>
-        <Toolbar style={baseStyles.header}>
-          <ToolbarGroup firstChild={true}>
-            <span>Better Softphone</span>
-          </ToolbarGroup>
-          <ToolbarGroup>
-            <FlatButton label="Logout" onClick={this.handleLogout} primary={true} />
-          </ToolbarGroup>
-        </Toolbar>
-        <Paper>
+        <AppBar
+          title="Better Softphone"
+        >
+        </AppBar>
+        <div>
           {this.props.children}
-        </Paper>
+        </div>
       </div>
     );
   }

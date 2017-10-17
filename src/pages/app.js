@@ -1,55 +1,34 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { omit } from 'lodash';
 import keydown from 'react-keydown';
-import { FloatingActionButton, MenuItem, SelectField, TextField } from 'material-ui';
+import { MenuItem, SelectField, TextField } from 'material-ui';
 import phoneFormatter from 'phone-formatter';
-import Phone from 'material-ui/svg-icons/maps/local-phone';
 
-import Twilio from '../lib/twilio';
+import Twilio, { setupTwilio } from '../lib/twilio';
 import { getNumbers } from '../state/self';
+import { addCall } from '../state/calls';
 import './app.css';
 
+import AppWrapper from '../wrappers/app';
+import CallLog from '../components/call-log';
+import Dialer from '../components/dialer';
+
 import { apiFetch } from '../lib/fetch';
-// Maybe use a redux-middleware for these
-function setupTwilio(component) {
-  Twilio.Device.ready((device) => {
-    console.log('Twilio.Device Ready!', device);
-  });
 
-  Twilio.Device.error((error) => {
-    component.setState({
-      onCall: false,
-    });
-    console.log('Twilio.Device Error: ' + error.message, error);
-  });
-
-  Twilio.Device.connect((conn) => {
-    console.log('Successfully established call!', conn);
-  });
-
-  Twilio.Device.disconnect((conn) => {
-    component.setState({
-      onCall: false,
-    });
-    console.log('Call ended.', conn);
-  });
-
-  Twilio.Device.incoming((conn) => {
-    console.log('Incoming connection from ' + conn.parameters.From);
-    conn.accept();
-  });
-}
-
+// Keys that keydown will listen for
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '*', 'enter', 'shift+8', 'shift+=', 'backspace'];
 
 const App = keydown(KEYS)(class App extends Component {
   static defaultProps = {
+    calls: {},
     self: {
       numbers: [],
     },
   }
   static propTypes = {
+    calls: PropTypes.object,
     getNumbers: PropTypes.object.isRequired,
     self: PropTypes.object,
   }
@@ -57,7 +36,8 @@ const App = keydown(KEYS)(class App extends Component {
     super(props);
     this.state = {
       callerIdFocused: false,
-      onCall: false,
+      errors: {},
+      inCall: false,
       number: '',
       token: null,
     };
@@ -82,7 +62,7 @@ const App = keydown(KEYS)(class App extends Component {
     this.props.getNumbers();
   }
   componentWillReceiveProps({ keydown }) {
-    const { callerIdFocused, dialpadNumberFocused, onCall, number } = this.state;
+    const { callerIdFocused, dialpadNumberFocused, inCall, number } = this.state;
     if (keydown.event) {
       const { key } = keydown.event;
       if (key === 'Backspace') {
@@ -93,7 +73,7 @@ const App = keydown(KEYS)(class App extends Component {
       if (key !== 'Enter') {
         return this.handleTouchEnterNumber(key);
       }
-      if (key === 'Enter' && !callerIdFocused && !onCall && !dialpadNumberFocused) {
+      if (key === 'Enter' && !callerIdFocused && !inCall && !dialpadNumberFocused) {
         return this.handleDial();
       }
     }
@@ -114,19 +94,30 @@ const App = keydown(KEYS)(class App extends Component {
   handleChangeCallerId = (evt, idx, val) => {
     this.setState({
       callerId: val,
+      errors: omit(this.state.errors, 'callerId'),
     });
   }
   handleDial = (e) => {
-    const { callerId, number, onCall } = this.state;
+    const { callerId, number, inCall } = this.state;
     if (e) {
       e.preventDefault();
     }
-    if (onCall) {
+    if (inCall) {
       return;
     }
-    this.setState({ onCall: true });
+    if (!this.state.callerId) {
+      return this.setState({
+        errors: {
+          ...this.state.errors,
+          callerId: 'Please Select Your Caller Id',
+        },
+      });
+    }
+    this.setState({ inCall: true });
+    const prettyNumber = phoneFormatter.normalize(number);
+    this.props.addCall(prettyNumber);
     Twilio.Device.connect({
-      To: phoneFormatter.normalize(number),
+      To: prettyNumber,
       callerId,
     });
   }
@@ -142,7 +133,7 @@ const App = keydown(KEYS)(class App extends Component {
   }
   handleHangup = () => {
     this.setState({
-      onCall: false,
+      inCall: false,
     });
     Twilio.Device.disconnectAll();
   }
@@ -172,163 +163,55 @@ const App = keydown(KEYS)(class App extends Component {
     });
 
     return (
-      <div className="App">
-        <div className="dialpad-controls">
-          <SelectField
-            floatingLabelText="Caller Id"
-            onChange={this.handleChangeCallerId}
-            onFocus={this.handleFocusSelect}
-            onBlur={this.handleBlurSelect}
-            value={this.state.callerId}
-          >
-            {numberOptions}
-          </SelectField>
-          <div>
-            <form onSubmit={this.handleDial}>
-              <TextField
-                floatingLabelText="Number to Dial"
-                onChange={this.handleEnterNumber}
-                value={this.state.number}
+      <AppWrapper>
+        <div className="App">
+          <div className="dialpad-controls">
+            <SelectField
+              floatingLabelText="Caller Id"
+              errorText={this.state.errors.callerId}
+              onChange={this.handleChangeCallerId}
+              onFocus={this.handleFocusSelect}
+              onBlur={this.handleBlurSelect}
+              value={this.state.callerId}
+            >
+              {numberOptions}
+            </SelectField>
+            <div>
+              <form onSubmit={this.handleDial}>
+                <TextField
+                  floatingLabelText="Number to Dial"
+                  onChange={this.handleEnterNumber}
+                  value={this.state.number}
+                />
+              </form>
+            </div>
+            <div className="App-body">
+              <Dialer
+                inCall={this.state.inCall}
+                onHangup={this.handleHangup}
+                onDial={this.handleDial}
+                onBlurNumber={this.handleBlurNumber}
+                onFocusNumber={this.handleFocusNumber}
+                onNumberClick={this.handleTouchEnterNumber}
               />
-            </form>
-          </div>
-          <div className="dialpad">
-            <div className="flex-item">
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('1', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>1</div>
-              </FloatingActionButton>
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('2', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>2</div>
-              </FloatingActionButton>
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('3', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>3</div>
-              </FloatingActionButton>
-            </div>
-            <div className="flex-item">
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('4', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>4</div>
-              </FloatingActionButton>
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('5', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>5</div>
-              </FloatingActionButton>
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('6', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>6</div>
-              </FloatingActionButton>
-            </div>
-            <div className="flex-item">
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('7', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>7</div>
-              </FloatingActionButton>
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('8', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>8</div>
-              </FloatingActionButton>
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('9', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>9</div>
-              </FloatingActionButton>
-            </div>
-            <div className="flex-item">
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('*', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>*</div>
-              </FloatingActionButton>
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('0', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-              >
-                <div>0</div>
-              </FloatingActionButton>
-              <FloatingActionButton
-                className="dialpad-btn"
-                onClick={e => this.handleTouchEnterNumber('+', e)}
-                onFocus={this.handleFocusNumber}
-                onBlur={this.handleBlurNumber}
-                value="+"
-              >
-                <div>+</div>
-              </FloatingActionButton>
-            </div>
-            <div className="flex-item">
-              {this.state.onCall ?
-                (
-                  <FloatingActionButton
-                    onClick={this.handleHangup}
-                    secondary={true}
-                  >
-                    <Phone />
-                  </FloatingActionButton>
-                )
-                : (
-                  <FloatingActionButton
-                    onClick={this.handleDial}
-                  >
-                    <Phone />
-                  </FloatingActionButton>
-                )}
+              <CallLog
+                calls={this.props.calls}
+              />
             </div>
           </div>
         </div>
-      </div>
+      </AppWrapper>
     );
   }
 });
 
 function mapStateToProps(state) {
-  const { self } = state;
-  return { self };
+  const { self, calls } = state;
+  return { self, calls: calls.data };
 }
 
 const boundFunctions = {
+  addCall,
   getNumbers,
 };
 

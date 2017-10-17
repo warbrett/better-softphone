@@ -23,7 +23,7 @@ class CallLog extends Component {
   render() {
     const { calls } = this.props;
     const callList = map(calls, (call) => {
-      return (<div key={call.id}> Call </div>);
+      return (<div key={call.id}> {call.number} </div>);
     });
     return (
       <div className="CallLog">
