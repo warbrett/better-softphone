@@ -1,6 +1,6 @@
 {
   "short_name": "Better Softphone",
-  "name": "Better SoftPHone",
+  "name": "Better SoftPhone",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,6 +10,7 @@
   ],
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }
