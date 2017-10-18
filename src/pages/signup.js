@@ -94,8 +94,17 @@ class Signup extends Component {
   }
   render() {
     const { errors } = this.state;
+    const controls = [
+      <RaisedButton
+        disabled={Object.keys(errors).length}
+        label="Signup"
+        onClick={this.handleSignup}
+        primary={true}
+        style={baseStyles.signupBtn}
+      />,
+    ];
     return (
-      <AuthWrapper title="Signup">
+      <AuthWrapper controls={controls} pageError={this.state.pageError} title="Signup">
         <div>
           <TextField
             errorText={errors.name}
@@ -135,15 +144,6 @@ class Signup extends Component {
             onChange={this.handleTwimlAppSid}
             value={this.state.twimlAppSid}
           />
-          <div>
-            <RaisedButton
-              disabled={Object.keys(errors).length}
-              label="Signup"
-              onClick={this.handleSignup}
-              primary={true}
-              style={baseStyles.signupBtn}
-            />
-          </div>
         </div>
       </AuthWrapper>
     );

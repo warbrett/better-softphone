@@ -9,11 +9,13 @@ const baseStyles = {
     margin: '25px auto',
     padding: 25,
     width: 400,
-    minHeight: 300,
   },
   container: {
     height: 50,
     width: '100%',
+  },
+  errorMessage: {
+    color: colors.error,
   },
   header: {
     backgroundColor: colors.headerBlue,
@@ -32,6 +34,17 @@ const baseStyles = {
 };
 
 class AuthWrapper extends Component {
+  static defaultProps = {
+    controls: null,
+    title: 'Better SoftPhone',
+    pageError: null,
+  }
+  static propTypes = {
+    controls: PropTypes.node,
+    children: PropTypes.node.isRequired,
+    title: PropTypes.string,
+    pageError: PropTypes.string,
+  }
   render() {
     return (
       <div style={baseStyles.container}>
@@ -50,17 +63,15 @@ class AuthWrapper extends Component {
         </Toolbar>
         <Paper style={baseStyles.childContainer}>
           <h2 style={baseStyles.pageTitle}>{this.props.title}</h2>
+          <div style={baseStyles.errorMessage}>{this.props.pageError}</div>
           {this.props.children}
+          <div>
+            {this.props.controls}
+          </div>
         </Paper>
       </div>
     );
   }
 }
-
-
-AuthWrapper.propTypes = {
-  children: PropTypes.node.isRequired,
-  title: PropTypes.string.isRequired,
-};
 
 export default AuthWrapper;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { forEach, upperFirst } from 'lodash';
+import { forEach, omit, upperFirst } from 'lodash';
 import { RaisedButton, TextField } from 'material-ui';
 import AuthWrapper from '../wrappers/auth';
 import validate from '../lib/validate';
@@ -14,7 +14,7 @@ const baseStyles = {
   },
   btnContainer: {
     position: 'absolute',
-    top: 320,
+    top: 400,
   },
 };
 
@@ -49,6 +49,7 @@ class Login extends Component {
   handleText = (field, evt) => {
     this.setState({
       [field]: evt.target.value,
+      errors: omit(this.state.errors, field),
     });
   }
   handleLogin = () => {
@@ -70,9 +71,23 @@ class Login extends Component {
       });
   }
   render() {
+    const controls = [
+      <Link to="/forgot">
+        <RaisedButton
+          label="Reset Password"
+          secondary={true}
+          style={baseStyles.btn}
+        />
+      </Link>,
+      <RaisedButton
+        label="Login"
+        onClick={this.handleLogin}
+        primary={true}
+        style={baseStyles.btn}
+      />,
+    ];
     return (
-      <AuthWrapper title="Login">
-        {this.state.pageError}
+      <AuthWrapper controls={controls} pageError={this.state.pageError} title="Login">
         <div>
           <TextField
             errorText={this.state.errors.email}
@@ -88,21 +103,6 @@ class Login extends Component {
             onChange={this.handlePassword}
             type="password"
             value={this.state.password}
-          />
-        </div>
-        <div style={baseStyles.btnContainer}>
-          <Link to="/forgot">
-            <RaisedButton
-              label="Reset Password"
-              secondary={true}
-              style={baseStyles.btn}
-            />
-          </Link>
-          <RaisedButton
-            label="Login"
-            onClick={this.handleLogin}
-            primary={true}
-            style={baseStyles.btn}
           />
         </div>
       </AuthWrapper>

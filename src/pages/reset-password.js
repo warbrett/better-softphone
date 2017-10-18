@@ -10,10 +10,6 @@ const baseStyles = {
   btn: {
     margin: 15,
   },
-  btnContainer: {
-    position: 'absolute',
-    top: 320,
-  },
 };
 
 class ResetPassword extends Component {
@@ -44,14 +40,22 @@ class ResetPassword extends Component {
       })
       .catch(() => {
         this.setState({
-          message: 'An Error Occured',
+          pageError: 'An Error Occured',
         });
       });
   }
   render() {
+    const controls = [
+      <RaisedButton
+        label="Reset Password"
+        onClick={this.handleReset}
+        primary={true}
+        style={baseStyles.btn}
+      />,
+    ];
+
     return (
-      <AuthWrapper title="Reset Password">
-        {this.state.message}
+      <AuthWrapper controls={controls} pageError={this.state.pageError} title="Reset Password">
         <div>
           <TextField
             floatingLabelText="Password"
@@ -65,14 +69,6 @@ class ResetPassword extends Component {
             onChange={this.handleConfirmPassword}
             errorText={this.state.passwordError}
             value={this.state.confirmPassword}
-          />
-        </div>
-        <div style={baseStyles.btnContainer}>
-          <RaisedButton
-            label="Reset Password"
-            onClick={this.handleReset}
-            primary={true}
-            style={baseStyles.btn}
           />
         </div>
       </AuthWrapper>
