@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { map } from 'lodash';
+import { Subheader, List, ListItem } from 'material-ui';
+import CommunicationCall from 'material-ui/svg-icons/communication/call';
 // import Phone from 'material-ui/svg-icons/maps/local-phone';
 
-// import './call-log.css';
+const baseStyles = {
+  container: {
+    border: '1px solid rgb(217, 217, 217)',
+    display: 'flex',
+    flexDirection: 'column',
+    height: 320,
+    width: 200,
+  },
+};
 
 class CallLog extends Component {
   static defaultProps = {
@@ -16,20 +26,26 @@ class CallLog extends Component {
     super(props);
     this.state = {};
   }
-  componentDidMount() {
-  }
   handleCallSelect = () => {
   }
   render() {
     const { calls } = this.props;
+    // TODO: Clear split/reverse once these are stored on the server
     const callList = map(calls, (call) => {
-      return (<div key={call.id}> {call.number} </div>);
-    });
+      return (
+        <ListItem
+          key={call.id}
+          leftIcon={<CommunicationCall />}
+          primaryText={call.number}
+        />
+      );
+    }).reverse().splice(0, 5);
     return (
-      <div className="CallLog">
-        <div>
+      <div style={baseStyles.container}>
+        <Subheader>Recent Calls</Subheader>
+        <List>
           {callList}
-        </div>
+        </List>
       </div>
     );
   }

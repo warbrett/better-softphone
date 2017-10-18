@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { AppBar } from 'material-ui';
-import { colors } from '../lib/app-styles';
+import { AppBar, IconButton, IconMenu, MenuItem } from 'material-ui';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 const baseStyles = {
   container: {
@@ -17,19 +17,38 @@ const baseStyles = {
   },
 };
 
+const menuOrigins = { horizontal: 'right', vertical: 'top' };
 class AppWrapper extends Component {
-  static defaultProps = {}
+  static defaultProps = {
+    label: 'Better Softphone',
+  }
   static propTypes = {
     children: PropTypes.node.isRequired,
+    label: PropTypes.string,
   }
   handleLogout = () => {
-    console.log('logging out!');
+    console.log('logout');
+  }
+  handleSettings = () => {
+    console.log('settings');
   }
   render() {
+    const menu = (
+      <IconMenu
+        iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+        targetOrigin={menuOrigins}
+        anchorOrigin={menuOrigins}
+      >
+        <MenuItem onClick={this.handleSettings} primaryText="Settings" />
+        <MenuItem onClick={this.handleLogout} primaryText="Sign out" />
+      </IconMenu>
+    );
     return (
       <div style={baseStyles.container}>
         <AppBar
-          title="Better Softphone"
+          title={this.props.label}
+          iconElementRight={menu}
+          showMenuIconButton={false}
         />
         <div>
           {this.props.children}

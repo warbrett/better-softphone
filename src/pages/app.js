@@ -20,6 +20,15 @@ import { apiFetch } from '../lib/fetch';
 // Keys that keydown will listen for
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '*', 'enter', 'shift+8', 'shift+=', 'backspace'];
 
+const baseStyles = {
+  phoneControls: {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
+    width: '100%',
+  },
+};
 const App = keydown(KEYS)(class App extends Component {
   static defaultProps = {
     calls: {},
@@ -29,7 +38,7 @@ const App = keydown(KEYS)(class App extends Component {
   }
   static propTypes = {
     calls: PropTypes.object,
-    getNumbers: PropTypes.object.isRequired,
+    getNumbers: PropTypes.func.isRequired,
     self: PropTypes.object,
   }
   constructor(props) {
@@ -185,7 +194,7 @@ const App = keydown(KEYS)(class App extends Component {
                 />
               </form>
             </div>
-            <div className="App-body">
+            <div style={baseStyles.phoneControls}>
               <Dialer
                 inCall={this.state.inCall}
                 onHangup={this.handleHangup}
@@ -194,9 +203,9 @@ const App = keydown(KEYS)(class App extends Component {
                 onFocusNumber={this.handleFocusNumber}
                 onNumberClick={this.handleTouchEnterNumber}
               />
-              <CallLog
+              {/*<CallLog
                 calls={this.props.calls}
-              />
+                />*/}
             </div>
           </div>
         </div>
