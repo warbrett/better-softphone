@@ -7,7 +7,8 @@ import { MenuItem, SelectField, TextField } from 'material-ui';
 import phoneFormatter from 'phone-formatter';
 
 import Twilio, { setupTwilio } from '../lib/twilio';
-import { getNumbers } from '../state/self';
+import { logout } from '../state/self';
+import { getNumbers } from '../state/phone';
 import { addCall } from '../state/calls';
 
 import AppWrapper from '../wrappers/app';
@@ -35,13 +36,15 @@ const baseStyles = {
 const App = keydown(KEYS)(class App extends Component {
   static defaultProps = {
     calls: {},
-    self: {
-      numbers: [],
-    },
+    self: {},
+    numbers: [],
   }
   static propTypes = {
+    addCall: PropTypes.func.isRequired,
     calls: PropTypes.object,
     getNumbers: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired,
+    numbers: PropTypes.array,
     self: PropTypes.object,
   }
   constructor(props) {
@@ -160,7 +163,7 @@ const App = keydown(KEYS)(class App extends Component {
     });
   }
   render() {
-    const { numbers } = this.props.self;
+    const { numbers } = this.props;
     const numberOptions = numbers.map((n) => {
       const formatted = phoneFormatter.format(n, '(NNN) NNN-NNNN');
       return (
@@ -175,7 +178,7 @@ const App = keydown(KEYS)(class App extends Component {
     });
 
     return (
-      <AppWrapper>
+      <AppWrapper onLogout={this.props.logout}>
         <div style={baseStyles.container}>
           <div style={flexCenterColumn}>
             <SelectField
@@ -218,13 +221,14 @@ const App = keydown(KEYS)(class App extends Component {
 });
 
 function mapStateToProps(state) {
-  const { self, calls } = state;
-  return { self, calls: calls.data };
+  const { self, calls, phone } = state;
+  return { self, numbers: phone.numbers, calls: calls.data };
 }
 
 const boundFunctions = {
   addCall,
   getNumbers,
+  logout,
 };
 
 export default connect(mapStateToProps, boundFunctions)(App);

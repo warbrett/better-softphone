@@ -1,5 +1,6 @@
 import { makeActionCreator } from 'cooldux';
 import { uniqueId } from 'lodash';
+import { LOGOUT } from './self';
 
 const ADD_CALL_START = 'ADD_CALL_START';
 const ADD_CALL_END = 'ADD_CALL_END';
@@ -29,6 +30,8 @@ function callsReducer(state = initialState, { type, payload }) {
     case ADD_CALL_START:
     case ADD_CALL_END:
       return { ...state, data: { ...state.data, [payload.id]: payload } };
+    case LOGOUT:
+      return { ...initialState };
     default:
       return state;
   }

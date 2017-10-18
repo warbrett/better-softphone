@@ -25,12 +25,7 @@ class AppWrapper extends Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
     label: PropTypes.string,
-  }
-  handleLogout = () => {
-    console.log('logout');
-  }
-  handleSettings = () => {
-    console.log('settings');
+    onLogout: PropTypes.func.isRequired,
   }
   render() {
     const menu = (
@@ -39,8 +34,7 @@ class AppWrapper extends Component {
         targetOrigin={menuOrigins}
         anchorOrigin={menuOrigins}
       >
-        <MenuItem onClick={this.handleSettings} primaryText="Settings" />
-        <MenuItem onClick={this.handleLogout} primaryText="Sign out" />
+        <MenuItem onClick={this.props.onLogout} primaryText="Sign out" />
       </IconMenu>
     );
     return (

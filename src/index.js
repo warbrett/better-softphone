@@ -22,7 +22,6 @@ import ResetPassword from './pages/reset-password';
 const store = createStore(reducers, applyMiddleware(reduxThunk));
 
 function requireAuth(nextState, replace, cb) {
-  console.log('require auth');
   return store.dispatch(verifyUser())
     .then(() => cb())
     .catch(() => {
@@ -36,10 +35,10 @@ const application = (
     <MuiThemeProvider>
       <Router history={browserHistory}>
         <Route path="/" component={Login} />
-        <Route path="/app" component={App} onEnter={requireAuth} />
         <Route path="/signup" component={Signup} />
         <Route path="/forgot" component={ForgotPassword} />
         <Route path="/reset" component={ResetPassword} />
+        <Route path="/app" component={App} onEnter={requireAuth} />
       </Router>
     </MuiThemeProvider>
   </Provider>

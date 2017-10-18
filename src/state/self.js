@@ -1,3 +1,4 @@
+import { browserHistory } from 'react-router';
 import { makeActionCreator } from 'cooldux';
 import { apiFetch } from '../lib/fetch';
 
@@ -13,10 +14,6 @@ const SIGNUP_START = 'SIGNUP_START';
 const SIGNUP_END = 'SIGNUP_END';
 const SIGNUP_ERROR = 'SIGNUP_ERROR';
 
-const GET_NUMBERS_START = 'GET_NUMBERS_START';
-const GET_NUMBERS_END = 'GET_NUMBERS_END';
-const GET_NUMBERS_ERROR = 'GET_NUMBERS_ERROR';
-
 const FORGOT_PASSWORD_START = 'FORGOT_PASSWORD_START';
 const FORGOT_PASSWORD_END = 'FORGOT_PASSWORD_END';
 const FORGOT_PASSWORD_ERROR = 'FORGOT_PASSWORD_ERROR';
@@ -24,6 +21,8 @@ const FORGOT_PASSWORD_ERROR = 'FORGOT_PASSWORD_ERROR';
 const RESET_PASSWORD_START = 'RESET_PASSWORD_START';
 const RESET_PASSWORD_END = 'RESET_PASSWORD_END';
 const RESET_PASSWORD_ERROR = 'RESET_PASSWORD_ERROR';
+
+export const LOGOUT = 'LOGOUT';
 
 const loginStart = makeActionCreator(LOGIN_START);
 const loginEnd = makeActionCreator(LOGIN_END);
@@ -37,10 +36,6 @@ const signupStart = makeActionCreator(SIGNUP_START);
 const signupEnd = makeActionCreator(SIGNUP_END);
 const signupError = makeActionCreator(SIGNUP_ERROR);
 
-const getNumbersStart = makeActionCreator(GET_NUMBERS_START);
-const getNumbersEnd = makeActionCreator(GET_NUMBERS_END);
-const getNumbersError = makeActionCreator(GET_NUMBERS_ERROR);
-
 const forgotPasswordStart = makeActionCreator(FORGOT_PASSWORD_START);
 const forgotPasswordEnd = makeActionCreator(FORGOT_PASSWORD_END);
 const forgotPasswordError = makeActionCreator(FORGOT_PASSWORD_ERROR);
@@ -48,6 +43,8 @@ const forgotPasswordError = makeActionCreator(FORGOT_PASSWORD_ERROR);
 const resetPasswordStart = makeActionCreator(RESET_PASSWORD_START);
 const resetPasswordEnd = makeActionCreator(RESET_PASSWORD_END);
 const resetPasswordError = makeActionCreator(RESET_PASSWORD_ERROR);
+
+const logoutAC = makeActionCreator(LOGOUT);
 
 export function login(email, password) {
   return (dispatch) => {
@@ -65,6 +62,13 @@ export function login(email, password) {
         dispatch(loginError(err));
         throw err;
       });
+  };
+}
+
+export function logout() {
+  return (dispatch) => {
+    dispatch(logoutAC());
+    browserHistory.push('/');
   };
 }
 
@@ -126,22 +130,6 @@ export function resetPassword(password, token) {
   };
 }
 
-export function getNumbers() {
-  return (dispatch) => {
-    dispatch(getNumbersStart());
-    return apiFetch('/twilio-numbers')
-      .then((numbers) => {
-        dispatch(getNumbersEnd(numbers));
-        return numbers;
-      })
-      .catch((err) => {
-        dispatch(getNumbersError(err));
-        throw err;
-      });
-  };
-}
-
-
 export function verifyUser() {
   return (dispatch) => {
     dispatch(verifyStart());
@@ -160,7 +148,6 @@ export function verifyUser() {
 
 const initialState = {
   id: null,
-  numbers: [],
 };
 
 function userReducer(state = initialState, { type, payload }) {
@@ -168,10 +155,10 @@ function userReducer(state = initialState, { type, payload }) {
     case VERIFY_END:
     case LOGIN_END:
       return { ...state, ...payload };
-    case GET_NUMBERS_END:
-      return { ...state, numbers: payload };
     case SIGNUP_END:
       return { ...state, ...payload };
+    case LOGOUT:
+      return { ...initialState };
     default:
       return state;
   }
