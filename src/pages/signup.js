@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { RaisedButton, TextField } from 'material-ui';
 import { forEach, omit, upperFirst } from 'lodash';
@@ -48,6 +49,10 @@ const fields = {
 };
 
 class Signup extends Component {
+  static propTypes = {
+    signup: PropTypes.func.isRequired,
+    router: PropTypes.object.isRequired,
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -79,7 +84,7 @@ class Signup extends Component {
     const { email, password, name, twimlAppSid, twilioAuthToken, twilioAccountSid } = this.state;
     this.props.signup({ email, password, name, twimlAppSid, twilioAuthToken, twilioAccountSid })
       .then(() => {
-        this.props.history.push('/app');
+        this.props.router.push('/app');
       })
       .catch(() => {
         this.setState({
@@ -145,7 +150,7 @@ class Signup extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {};
 }
 

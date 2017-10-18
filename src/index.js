@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Router, Route, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import reduxThunk from 'redux-thunk';
@@ -10,6 +10,7 @@ import reduxThunk from 'redux-thunk';
 import './index.css';
 import reducers from './state';
 import registerServiceWorker from './registerServiceWorker';
+import { verifyUser } from './state/self';
 
 // Pages
 import App from './pages/app';
@@ -20,17 +21,25 @@ import ResetPassword from './pages/reset-password';
 
 const store = createStore(reducers, applyMiddleware(reduxThunk));
 
+function requireAuth(nextState, replace, cb) {
+  console.log('require auth');
+  return store.dispatch(verifyUser())
+    .then(() => cb())
+    .catch(() => {
+      replace({ pathname: '/' });
+      cb();
+    });
+}
+
 const application = (
   <Provider store={store}>
     <MuiThemeProvider>
-      <Router>
-        <div>
-          <Route exact path="/" component={Login} />
-          <Route path="/app" component={App} />
-          <Route path="/signup" component={Signup} />
-          <Route path="/forgot" component={ForgotPassword} />
-          <Route path="/reset" component={ResetPassword} />
-        </div>
+      <Router history={browserHistory}>
+        <Route path="/" component={Login} />
+        <Route path="/app" component={App} onEnter={requireAuth} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/forgot" component={ForgotPassword} />
+        <Route path="/reset" component={ResetPassword} />
       </Router>
     </MuiThemeProvider>
   </Provider>

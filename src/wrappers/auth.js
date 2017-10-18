@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router';
 import { Paper, FlatButton, Toolbar, ToolbarGroup } from 'material-ui';
 import { colors } from '../lib/app-styles';
 

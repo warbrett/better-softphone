@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { RaisedButton, TextField } from 'material-ui';
 import AuthWrapper from '../wrappers/auth';
 import { forgotPassword } from '../state/self';
@@ -17,6 +17,9 @@ const baseStyles = {
 };
 
 class ForgotPassword extends Component {
+  static propTypes = {
+    forgotPassword: PropTypes.func.isRequired,
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -74,7 +77,7 @@ class ForgotPassword extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {};
 }
 

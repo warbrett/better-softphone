@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { forEach, upperFirst } from 'lodash';
 import { RaisedButton, TextField } from 'material-ui';
 import AuthWrapper from '../wrappers/auth';
@@ -30,6 +30,10 @@ const fields = {
 };
 
 class Login extends Component {
+  static propTypes = {
+    router: PropTypes.object.isRequired,
+    login: PropTypes.func.isRequired,
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -56,9 +60,9 @@ class Login extends Component {
     const { email, password } = this.state;
     this.props.login(email, password)
       .then(() => {
-        this.props.history.push('/app');
+        this.props.router.push('/app');
       })
-      .catch((err) => {
+      .catch(() => {
         this.setState({
           password: '',
           pageError: 'Error Logging in',
@@ -106,7 +110,7 @@ class Login extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {};
 }
 

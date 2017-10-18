@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import qs from 'query-string';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import { RaisedButton, TextField } from 'material-ui';
@@ -41,7 +40,7 @@ class ResetPassword extends Component {
     }
     this.props.resetPassword(password, token)
       .then(() => {
-        this.props.history.push('/?message=reset');
+        this.props.router.push('/?message=reset');
       })
       .catch(() => {
         this.setState({
@@ -83,7 +82,7 @@ class ResetPassword extends Component {
 
 function mapStateToProps(state, props) {
   return {
-    query: qs.parse(props.location.search),
+    query: props.location.query,
   };
 }
 
@@ -92,7 +91,7 @@ const boundFunctions = {
 };
 
 ResetPassword.propTypes = {
-  history: PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
   resetPassword: PropTypes.func.isRequired,
 };
 

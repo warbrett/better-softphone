@@ -1,10 +1,13 @@
 import { makeActionCreator } from 'cooldux';
-import { get } from 'lodash';
 import { apiFetch } from '../lib/fetch';
 
 const LOGIN_START = 'LOGIN_START';
 const LOGIN_END = 'LOGIN_END';
 const LOGIN_ERROR = 'LOGIN_ERROR';
+
+const VERIFY_START = 'VERIFY_START';
+const VERIFY_END = 'VERIFY_END';
+const VERIFY_ERROR = 'VERIFY_ERROR';
 
 const SIGNUP_START = 'SIGNUP_START';
 const SIGNUP_END = 'SIGNUP_END';
@@ -26,6 +29,10 @@ const loginStart = makeActionCreator(LOGIN_START);
 const loginEnd = makeActionCreator(LOGIN_END);
 const loginError = makeActionCreator(LOGIN_ERROR);
 
+const verifyStart = makeActionCreator(VERIFY_START);
+const verifyEnd = makeActionCreator(VERIFY_END);
+const verifyError = makeActionCreator(VERIFY_ERROR);
+
 const signupStart = makeActionCreator(SIGNUP_START);
 const signupEnd = makeActionCreator(SIGNUP_END);
 const signupError = makeActionCreator(SIGNUP_ERROR);
@@ -43,7 +50,7 @@ const resetPasswordEnd = makeActionCreator(RESET_PASSWORD_END);
 const resetPasswordError = makeActionCreator(RESET_PASSWORD_ERROR);
 
 export function login(email, password) {
-  return function dispatcher(dispatch) {
+  return (dispatch) => {
     dispatch(loginStart());
     const options = {
       method: 'POST',
@@ -81,7 +88,7 @@ export function signup(details) {
 }
 
 export function forgotPassword(email) {
-  return function dispatcher(dispatch) {
+  return (dispatch) => {
     const options = {
       method: 'POST',
       body: { email },
@@ -100,7 +107,7 @@ export function forgotPassword(email) {
 }
 
 export function resetPassword(password, token) {
-  return function dispatcher(dispatch) {
+  return (dispatch) => {
     const options = {
       method: 'POST',
       body: { password, token },
@@ -120,7 +127,7 @@ export function resetPassword(password, token) {
 }
 
 export function getNumbers() {
-  return function dispatcher(dispatch) {
+  return (dispatch) => {
     dispatch(getNumbersStart());
     return apiFetch('/twilio-numbers')
       .then((numbers) => {
@@ -136,21 +143,18 @@ export function getNumbers() {
 
 
 export function verifyUser() {
-  return (dispatch, getState) => {
-    const userId = get(getState(), 'self.id', false);
-    if (!userId) {
-      dispatch(loginStart());
-      // Attempt to login with cookie
-      return apiFetch('/users/me')
-        .then((user) => {
-          dispatch(loginEnd(user));
-          return user;
-        })
-        .catch((err) => {
-          dispatch(loginError(err));
-          throw err;
-        });
-    }
+  return (dispatch) => {
+    dispatch(verifyStart());
+    // Attempt to login with cookie
+    return apiFetch('/users/me')
+      .then((user) => {
+        dispatch(verifyEnd(user));
+        return user;
+      })
+      .catch((err) => {
+        dispatch(verifyError(err));
+        throw err;
+      });
   };
 }
 
@@ -161,6 +165,7 @@ const initialState = {
 
 function userReducer(state = initialState, { type, payload }) {
   switch (type) {
+    case VERIFY_END:
     case LOGIN_END:
       return { ...state, ...payload };
     case GET_NUMBERS_END:
