@@ -9,18 +9,21 @@ import phoneFormatter from 'phone-formatter';
 import Twilio, { setupTwilio } from '../lib/twilio';
 import { getNumbers } from '../state/self';
 import { addCall } from '../state/calls';
-import './app.css';
 
 import AppWrapper from '../wrappers/app';
 import CallLog from '../components/call-log';
 import Dialer from '../components/dialer';
 
 import { apiFetch } from '../lib/fetch';
+import { flexCenterColumn } from '../lib/app-styles';
 
 // Keys that keydown will listen for
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '*', 'enter', 'shift+8', 'shift+=', 'backspace'];
 
 const baseStyles = {
+  container: {
+    margin: 25,
+  },
   phoneControls: {
     display: 'flex',
     alignItems: 'center',
@@ -173,8 +176,8 @@ const App = keydown(KEYS)(class App extends Component {
 
     return (
       <AppWrapper>
-        <div className="App">
-          <div className="dialpad-controls">
+        <div style={baseStyles.container}>
+          <div style={flexCenterColumn}>
             <SelectField
               floatingLabelText="Caller Id"
               errorText={this.state.errors.callerId}
